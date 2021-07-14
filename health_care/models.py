@@ -35,3 +35,13 @@ class Locker(models.Model):
     owner = models.OneToOneField(verbose_name="라커룸 주인", to='health_care.Member',
                                  on_delete=models.SET_NULL, null=True, related_name='locker')
 
+class Equipment(models.Model):
+    name = models.CharField(verbose_name="기구 이름", max_length=50)
+    user = models.ManyToManyField(verbose_name="사용자", to='health_care.Member',
+                                  through='Use', related_name='used_equipment')
+    # If 'through' argument is not taken, django will make default bridge table for Member - Equipment.
+
+class Use(models.Model):
+    equipment = models.ForeignKey(verbose_name="사용 기구", to='health_care.Equipment', on_delete=models.CASCADE)
+    user = models.ForeignKey(verbose_name="사용자", to='health_care.Member', on_delete=models.CASCADE)
+    used_at = models.DateTimeField(verbose_name="사용 일시", auto_now_add=True)
