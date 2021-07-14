@@ -29,3 +29,9 @@ class PersonalTrain(models.Model):
     trainee = models.ForeignKey(verbose_name="PT회원", to='health_care.Member',
                                 on_delete=models.CASCADE, unique=True, related_name='PT') # SAME WITH ONE-TO-ONE FIELD
     remain = models.DateField(verbose_name="남은 PT 횟수")
+
+class Locker(models.Model):
+    number = models.IntegerField(verbose_name="라커룸 번호", primary_key=True)
+    owner = models.OneToOneField(verbose_name="라커룸 주인", to='health_care.Member',
+                                 on_delete=models.SET_NULL, null=True, related_name='locker')
+
