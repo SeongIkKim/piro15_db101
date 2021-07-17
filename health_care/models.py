@@ -9,7 +9,7 @@ class FitnessClub(models.Model):
         return self.name
 
 class Trainer(models.Model):
-    club = models.OneToOneField(verbose_name="소속 헬스장", to='health_care.FitnessClub',
+    club = models.ForeignKey(verbose_name="소속 헬스장", to='health_care.FitnessClub',
                              on_delete=models.SET_NULL, null=True)
     name = models.CharField(verbose_name="이름", max_length=50)
     phone_num = models.CharField(verbose_name="휴대폰번호", max_length=12)
@@ -18,7 +18,7 @@ class Trainer(models.Model):
         return self.name
 
 class Member(models.Model):
-    club = models.OneToOneField(verbose_name="소속 헬스장", to='health_care.FitnessClub',
+    club = models.ForeignKey(verbose_name="소속 헬스장", to='health_care.FitnessClub',
                              on_delete=models.CASCADE, related_name='member')
     trainer = models.ForeignKey(verbose_name="전담 트레이너", to='health_care.Trainer',
                                 on_delete=models.SET_NULL, null=True, related_name='trainee')
@@ -34,7 +34,7 @@ class PersonalTrain(models.Model):
                                 on_delete=models.CASCADE, related_name='PT')
     trainee = models.ForeignKey(verbose_name="PT회원", to='health_care.Member',
                                 on_delete=models.CASCADE, unique=True, related_name='PT') # SAME WITH ONE-TO-ONE FIELD
-    remain = models.DateField(verbose_name="남은 PT 횟수")
+    remain = models.IntegerField(verbose_name="남은 PT 횟수")
 
     def __str__(self):
         return f'{self.trainer} - {self.trainee} / {self.remain}'
@@ -50,7 +50,7 @@ class Locker(models.Model):
 class Equipment(models.Model):
     name = models.CharField(verbose_name="기구 이름", max_length=50)
     user = models.ManyToManyField(verbose_name="사용자", to='health_care.Member',
-                                  through='Use', related_name='used_equipment')
+                                  through='health_care.Use', related_name='used_equipment')
     # If 'through' argument is not taken, django will make default bridge table for Member - Equipment.
 
     def __str__(self):
